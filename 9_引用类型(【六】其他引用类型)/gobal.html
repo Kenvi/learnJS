@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>全局方法</title>
+</head>
+<body>
+	
+</body>
+<script>
+
+	//将字符串转换成数组
+	var str1 = '["111","222","333"]';
+	var arr = 'var Arr = ' + str1 ;
+	eval(arr);
+	console.log(Arr.length);
+
+	// 将字符串转换成对象
+	var str2 = '{name:"chenxiaobin",age:"22",sex:"man"}';
+	var obj = 'var Obj = ' + str2;
+	// eval(obj);
+	// or
+	var Obj = eval('('+str2+')');
+	console.log(Obj.name);
+
+</script>
+</html>
