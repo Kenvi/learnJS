@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>27_module-注解描述接口方法实现</title>
+</head>
+<body>
+	<script>
+
+		// javascript 定义接口的三种方式
+
+		// （1） 注解描述方式
+		//  优点：coder可以有一个参考
+		//  缺点：属于文档范畴，过于松散，没有检查接口的方法是否完全被实现
+		/*
+		*	interface Composite {
+		*		function add(obj);
+		*		function remove(obj);
+		*		function update(obj);
+		*		
+		*	}
+		*/
+		var CompositeImp_1 = function(){this.search = function(obj){};};
+		CompositeImp_1.prototype.add = function(obj){};
+		CompositeImp_1.prototype.remove = function(obj){};
+		CompositeImp_1.prototype.update = function(obj){};
+		var c1 = new CompositeImp_1();
+		var c2 = new CompositeImp_1();
+		console.log(c1.search === c2.search); // false
+		console.log(c1.add === c2.add); // true
+	</script>
+</body>
+</html>

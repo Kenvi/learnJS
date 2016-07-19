@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>29_module-鸭式辨型接口方法实现</title>
+</head>
+<body>
+	<script>
+		// javascript 定义接口的三种方式
+
+		// （3） 鸭式辨型法实现接口(最完美的javascript实现接口方式)
+		/*
+		*	interface Composite {
+		*		function add(obj);
+		*		function remove(obj);
+		*		function update(obj);
+		*		
+		*	}
+		*	interface FormItem {
+		*		function select(obj);
+		*	}
+		*/
+
+		// 接口类 实例化N多个接口
+		var Inerface = function(name,methods){
+			// 判断接口的参数个数
+			if(arguments.length !== 2){
+				throw new Error("This instance interface constructor arguments must be two!");
+			}
+
+			this.name = name;
+			this.methods = [];
+			for(var i=0;i<methods.length;i++){
+				if(typeof methods[i] !== 'string'){
+					throw new Error("The interface method's name must be string!");  
+				}
+				this.methods.push(methods[i]);
+			}
+		}
+
+
+		// 实例化接口对象
+		var CompositeInterface = new Inerface('CompositeInterface',['add','remove']);
+		var FormItemInterface = new Inerface('FormItemInterface',['update','select']);
+
+		// 具体的实现类
+		// CompositeImp_3 implements CompositeInterface , FormItemInterface
+		var CompositeImp_3 = function(){
+			
+		};
+		CompositeImp_3.prototype.add = function(obj){console.log('add')};
+		CompositeImp_3.prototype.remove = function(obj){console.log('remove')};
+		CompositeImp_3.prototype.update = function(obj){console.log('update')};
+		CompositeImp_3.prototype.select = function(obj){console.log('select')};
+
+		var c4 = new CompositeImp_3();
+
+
+		// 检验接口内方法
+		Inerface.ensureImplements = function(object){
+			if(arguments.length<2){
+				throw new Error("Inerface.ensureImplements methods' constructor must >=2 !");
+			}
+			// 获得接口实例对象
+			for(var i=1;i<arguments.length;i++){
+				var instanceInterface = arguments[i];
+				// 判断参数是否为接口类的类型
+				if(instanceInterface.constructor !== Inerface){
+					throw new Error("The argument's constructor is not belong to Inerface Class!");					
+				}
+
+				// 循环接口对象里的每一个方法
+				for(var j=0;j<instanceInterface.methods.length;j++){
+					var methodName = instanceInterface.methods[j]; // method's name(临时变量接收每一个方法的名称，为字符串类型)
+					if(!object[methodName] || typeof object[methodName] !== 'function'){
+						throw new Error("The method '"+methodName+"' is not found!");			
+					}
+				}
+			}
+		};
+
+		Inerface.ensureImplements(c4,CompositeInterface,FormItemInterface);
+
+		c4.remove(); // remove 
+
+		c4.add = 666;
+		Inerface.ensureImplements(c4,CompositeInterface,FormItemInterface);
+		c4.add(); // Uncaught Error: The method 'add' is not found!
+	</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>function</title>
+</head>
+<body>
+	
+</body>
+<script>
+	(function(a,b){
+		console.log(a+b);
+	})(1,2);
+	(function(){
+		console.log(this);
+	})();
+
+	var test = function(){
+		console.log('test2');
+	};
+	// console.log(test());
+
+	// 作用域
+	var k = 1;
+	function t1(){
+		var k = 2;
+		// function test(){return k;};
+		// var test = function(){return k;};
+		var test = new Function("return k;");
+
+		alert(test());
+	}
+
+	t1();
+</script>
+</html>

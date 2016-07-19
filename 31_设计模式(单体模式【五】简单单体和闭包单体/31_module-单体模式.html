@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>31_module-普通单体模式和闭包单体模式(singleton)</title>
+</head>
+<body>
+	
+	<script>
+
+		// (1) 普通单体模式
+		var Singleton = {
+			attr1 : true,
+			attr2 : 10,
+			method1 : function(){console.log('method1');},
+			method2 : function(){console.log('method2');},
+		};
+		Singleton.method1(); // method1
+
+		// 应用：划分命名空间 MyCode.lib.func();
+		var CXB = {};
+		CXB.Singleton = {
+			attr1 : true,
+			attr2 : 10,
+			method1 : function(){console.log('method1');},
+			method2 : function(){console.log('method2');}
+		};
+		CXB.Singleton.method2(); // method2
+
+
+		// (2) 闭包单体模式
+		var PWJ = {};
+		PWJ.Singleton = (function(){
+			var a1 = true , a2 = 10,
+				f1 = function(){console.log('f1');},
+				f2 = function(){console.log('f2');};
+
+			return {
+				attr1 : a1,
+				attr2 : a2,
+				method1 : function(){return f1();},
+				method2 : f2
+			};
+		})();
+		PWJ.Singleton.method1(); // f1
+		PWJ.Singleton.method2(); // f2
+	</script>
+</body>
+</html>

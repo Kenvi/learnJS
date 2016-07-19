@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>this永远指向调用它的对象</title>
+</head>
+<body>
+	
+</body>
+<script>	
+	var key = 20;
+	function test() {
+		this.key = 10;
+	}
+	
+	console.log(test.key);// undedined test()只编译并未执行，函数执行环境为全局
+
+	test(); // 相当于 window.test();
+	console.log(key); //10
+</script>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>执行环境与作用域链</title>
+</head>
+<body>
+	
+</body>
+<script>
+	var color_1 = 'blue';
+	function changeColor(){
+		var color_2 = 'red';
+
+		function swapColor(){
+			var color_3 = color_2;
+			color_2 = color_1;
+			color_1 = color_3;
+
+			console.log('swapColor中 c1:  '+color_1+'  c2:  '+color_2+'  c3:  '+color_3);
+		}
+		swapColor();
+
+		console.log('changeColor中 c1:  '+color_1+'  c2:  '+color_2);
+
+	}
+	changeColor(); 
+	console.log('window中 c1:  '+color_1);
+
+</script>
+</html>

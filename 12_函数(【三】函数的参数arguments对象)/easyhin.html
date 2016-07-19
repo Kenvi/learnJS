@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>堆-栈</title>
+</head>
+<body>
+	<script>
+		var a = function(){
+			return{
+				age : 22,
+				name : 'chenxiaobin'
+			}
+		}
+		var b = a;
+		var c = new a();
+		a.age = 23;
+		alert(b.age); //23
+		alert(c.age); //22
+	</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>28_module-属性检测接口方法实现</title>
+</head>
+<body>
+	<script>
+
+		// javascript 定义接口的三种方式
+
+		// （2） 属性检测方式
+		/*
+		*	interface Composite {
+		*		function add(obj);
+		*		function remove(obj);
+		*		function update(obj);
+		*		
+		*	}
+		*	interface FormItem {
+		*		function select(obj);
+		*	}
+		*/
+
+		// CompositeImp_2 implements Composite , FormItem
+		var CompositeImp_2 = function(){
+			this.implementsInterfaces = ['Composite','FormItem'];
+		};
+		CompositeImp_2.prototype.add = function(obj){console.log('add')};
+		CompositeImp_2.prototype.remove = function(obj){};
+		CompositeImp_2.prototype.update = function(obj){};
+		CompositeImp_2.prototype.select = function(obj){};
+
+		function CheckimplementsInterfaces(instance){
+			if(!IsImplements(instance,'Composite','FormItem')){
+				throw new Error('Object does not implement a required interface');
+			}
+		}
+
+		function IsImplements(object){
+			for(var i=1;i<arguments.length;i++){
+				var interfaceName = arguments[i];
+
+				var interfaceFound = false;
+				for(var j=0;j<object.implementsInterfaces.length;j++){
+					if(object.implementsInterfaces[j] == interfaceName){
+						interfaceFound = true;
+						break;
+					}
+				}
+				if(!interfaceFound){
+					return false;
+				}
+			}
+			return true;
+		}
+
+		var c3 = new CompositeImp_2();
+		CheckimplementsInterfaces(c3);
+		c3.add(); // add
+
+	</script>
+</body>
+</html>

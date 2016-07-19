@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>32_module-惰性单体和分支单体</title>
+</head>
+<body>
+	<script>
+
+		// 惰性单体模式
+		var PWJ = {};
+		PWJ.Base = (function(){
+
+			var uniqInstance; // 控制返回的单体对象
+
+			var init  = function(){
+				var a1 = true , a2 = 10,
+					f1 = function(){console.log('f1');},
+					f2 = function(){console.log('f2');};
+
+				return {
+					attr1 : a1,
+					attr2 : a2,
+					method1 : function(){return f1();},
+					method2 : f2
+				}
+			}
+			
+
+			return {
+				getInstance : function(){
+					if(!uniqInstance){	// 如果不存在，创建单体实例
+						uniqInstance = init();
+					}
+					return uniqInstance;
+				}
+			};
+		})();
+
+		PWJ.Base.getInstance().method1(); // f1
+		PWJ.Base.getInstance().method2(); // f2
+
+
+		// 分支单体
+		PWJ.More = (function(){
+
+			var def = true;
+
+			var obj_1 = { // Firefox
+				attr : 'Firefox'
+			};
+			var obj_2 = { // IE
+				attr : 'IE'
+			};
+
+			return (def) ? obj_1 : obj_2;
+		})();
+
+		console.log(PWJ.More.attr); // Firefox
+	</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>19_oop-prototype-简介</title>
+</head>
+<body>
+	<script>
+
+		function _Preson(name,age){
+			this.name = name;
+			this.age = age;
+			this.say = function(){console.log(this.name);};
+		}
+		var p3 = new _Preson('lu',23);
+		var p4 = new _Preson('zhang',23);
+		//p3.say(); // lu
+		//p4.say(); // zhang
+		console.log(p3.say == p4.say); // false
+
+
+		// 构造函数.prototype = 原型对象
+		function Person () {
+			// body...
+		}
+		var obj = Person.prototype;
+		obj.name = 'chenxiaobin';
+		obj.age = 22;
+		obj.say = function(){console.log(this.name);};
+		var p1 = new Person();
+		var p2 = new Person();
+		console.log(p1.say === p2.say); // true
+
+		// 原型对象.constructor(构造器) 指向并返回构造函数
+		console.log(obj.constructor); // functin Person()
+
+		// 实例对象.prototype = 原型对象
+		console.log(obj.isPrototypeOf(p1)); // true 判断一个对象是否为另一个对象的原型 isPrototypeOf
+
+
+		// 举一反三
+		function newPerson (name,age) {
+			var obj = newPerson.prototype;
+			obj.name = name;
+			obj.age = age;
+			obj.say = function(){console.log(this.name);};
+			// console.log(this);
+		}
+		
+		var p5 = new newPerson('chen',22);
+		var p6 = new newPerson('xiaobin',21);
+		p5.say(); //  xiaobin 原型对象是共用的
+		p6.say(); //  xiaobin
+	</script>
+</body>
+</html>

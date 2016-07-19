@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>20_oop-prototype常用方法</title>
+</head>
+<body>
+	<script>
+
+		//ECMA5新特性 Object.getPrototypeOf()  根据实例对象获得原型对象
+		function Person () {
+			// body...
+		}
+		Person.prototype.name = 'chen';
+		Person.prototype.age = 22;
+		Person.prototype.say = function(){console.log(this.name);};
+
+		var p1 = new Person();
+		console.log(Object.getPrototypeOf(p1) === Person.prototype); // true
+
+		var p2 = new Person();
+		p2.name = 'xiaobin';
+
+		// 每次读取属性的时候，会先搜索实例对象里面的name属性，有则返回该属性，
+		// 无则在该实例对应的原型对象里搜索name属性，有则返回，无则返回undefined
+		console.log(p2); // Person{name:'xiaobin',_proto_:{age:22,name:'chen',say:function(){..}}}
+		p2.say(); // xiaobin
+
+		delete p2.name;
+		p2.say(); // chen
+
+
+		
+		// 判断一个对象的属性是否为自身对象属性
+		var p3 = new Person();
+		console.log(p3.hasOwnProperty('name')); // false
+		p3.name = 'xiaobin';
+		console.log(p3.hasOwnProperty('name')); // true
+
+		// in 操作符 判断一个对象的属性是否属于原型属性或者实例属性
+		var p4 = new Person();
+		console.log('name' in p4); // true
+		var p5 = new Person();
+		p5.name = 'xiaobin';
+		console.log('name' in p5); // true
+
+		// 判断一个属性是否存在于原型中
+		function hasOwnPrototypeProperty(obj,val){
+			return !obj.hasOwnProperty(val) && val in obj;
+		}
+		console.log(hasOwnPrototypeProperty(p4,'name')); //true
+		console.log(hasOwnPrototypeProperty(p5,'name')); //false
+
+		// ECMA5新特性 Object.keys() 获取当前对象的所有keys并返回一个数组(constructor除外)
+		console.log(Object.keys(Person.prototype)); // ['name','age','say']
+		console.log(Object.keys(p5)); // ['name']
+
+		// Object.getOwnPropertyNames() 枚举对象所有属性(包括constructor)
+		console.log(Object.getOwnPropertyNames(Person.prototype)); // ['constructor','name','age','say']
+
+
+	</script>
+</body>
+</html>

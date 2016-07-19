@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>oop-prototype.forEach</title>
+</head>
+<body>
+	<script>
+		// ECMA5 forEach 循环遍历数组的每一项(只适合一维数组)
+		var arr = [1,undefined,null,true,[4,[5]],{'a':8}];
+		// arr.forEach(function (item,index,array) {
+		// 	//console.log(item); // 1 2 3 Arry[2]
+		// })
+
+		// 手动实现array each方法 能遍历多维数组
+		Array.prototype.each  = function(fn){
+			try{
+
+				this.i || (this.i=0);//计数器 记录当前遍历的元素位置
+
+				if(this.length>0 && fn.constructor == Function){ //数组长度不能为零且参数必须为函数
+					while(this.i < this.length){
+						var e = this[this.i];
+						if(e && e.constructor == Array){ // 已获取当前元素且当前元素为数组
+							e.each(fn); // 继续递归操作
+						}else{
+							fn.call(e,e); // 当前元素不为数组 将其作为参数传递给fn函数回调
+						}
+						this.i++;
+					}
+					this.i = null; // 释放内存 垃圾回收
+				}
+
+			}catch(err){
+				console.log(err);
+			}
+			
+			return this;
+
+		}
+		var func = function(item){
+			console.log(item);
+		}
+		arr.each(func);
+
+
+	</script>
+</body>
+</html>

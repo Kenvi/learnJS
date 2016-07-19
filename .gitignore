@@ -1,0 +1,14 @@
+node_modules
+start.sh
+.avoscloud
+
+# VIM
+*~
+*.swp
+.avoscloud/
+
+*.avi
+Aptana Studio
+Aptana Studio开发工具
+ppt
+源码文件

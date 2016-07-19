@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>参数</title>
+</head>
+<body>
+	
+</body>
+<script>
+	function add(a,b,c,d){
+		alert(add.length);//形参个数
+
+		alert(arguments.length);//实参个数[数组]
+
+		alert(arguments[0]);
+		alert(arguments[1]);
+		alert(arguments[2]);
+
+		return a+b;
+	}
+
+	add(10,20,20);
+
+	// function test(num){//阶乘函数
+	// 	if (num <= 1) {
+	// 		return 1;
+	// 	}else{
+	// 		return num * arguments.callee(num-1);
+	// 	}
+	// }
+	// alert(test(5));
+</script>
+</html>

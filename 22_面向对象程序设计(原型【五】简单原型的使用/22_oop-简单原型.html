@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>oop-简单原型</title>
+</head>
+<body>
+	<script>
+
+		// 简单原型
+		var Person = function() {
+			// body...
+		}
+		var p3 = new Person(); //===================================>  p3
+
+		Person.prototype = {
+			name : 'cehnxiaobin',
+			age : 22,
+			job : 'coder',
+			say : function(){
+				console.log(this.name);
+			}
+		}
+
+		var p1 = new Person();
+		p1.say(); // chenxiaobin （原型对象的属性和方法已重新定义）
+
+		console.log(Person.prototype.constructor); // function Object
+
+		// ECMA5(FF4+ IE8+) Object.defineProperty 给原型对象重新设置构造器
+		Object.defineProperty(Person.prototype,'constructor',{
+			enumerable : false, //不可被枚举
+			value : Person
+		});
+		console.log(Person.prototype.constructor); // function Person
+		console.log(Person.prototype); // {name:'chenxiaobin',age:22,job:'coder',say:function(){..}}
+
+		// 原型的动态特性
+
+		function _Person(){
+
+		}
+		var p2 = new _Person();
+		_Person.prototype.say = function(){console.log('我是方法')}
+		p2.say(); // '我是方法' 原型对象的构造器默认为_Person
+		//p3.say(); // Uncaught TypeError: p3.say is not a function (原型对象为空)
+	</script>
+</body>
+</html>

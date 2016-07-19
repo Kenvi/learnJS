@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>25_oop-继承的三种方式</title>
+</head>
+<body>
+	<script>
+
+		function Person (name,age) {
+			this.name = name;
+			this.age = age;
+		};
+		Person.prototype.id = 10;
+		Person.prototype.say = function(){console.log(this.name)};
+
+		// 原型继承：既继承了父类的属性和方法，也继承了父类的原型对象		
+		function Boy(sex){
+			this.sex = sex;
+		};
+		Boy.prototype = new Person('chenxiaobin',22);
+		var boy = new Boy('man');
+		console.log(boy.age); // 22
+		console.log(boy.id); // 10
+
+
+		// 类继承：只继承属性和方法，不继承原型对象（借用构造函数的方式继承）
+		function Girl(name,age,sex){
+			this.sex = sex;
+			Person.call(this,name,age);
+		};
+		var g = new Girl('panweijun',22,'woman');
+		console.log(g.name,g.age,g.sex,g.id); // panweijun 22 woman undefined(父类的原型对象并没有继承)
+
+
+		// 混合继承（原型继承+借用构造函数式继承）：既继承属性和方法，也继承原型对象，且可以一次传参
+		function Man(name,age,sex){
+			this.sex = sex;
+			Person.call(this,name,age);			
+		};
+		Man.prototype = new Person(); //继承父类的原型对象
+		var man = new Man('lu',23,'男');
+		man.say(); // lu
+	</script>
+</body>
+</html>

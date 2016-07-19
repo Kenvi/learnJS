@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>call && apply</title>
+</head>
+<body>
+	
+</body>
+<script>
+	function add(a,b){
+		alert(a + b) ;
+	}
+
+	function Obj(x,y){
+		this.x = x;
+		this.y = y;
+		alert(x * y);
+	}
+
+	var o = new Obj(20,50);
+	// add.call(o,o.x,o.y);
+	add.apply(o,[o.x,o.y]);
+	Obj.call(add,30,60);
+</script>
+</html>

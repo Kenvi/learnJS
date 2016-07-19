@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>24_oop-继承</title>
+</head>
+<body>
+	<script>
+		// js实现继承：原型链
+		// 构造函数 && 原型对象 && 实例对象
+		// 构造函数.prototype = 原型对象
+		// 原型对象.constructor = 构造函数(模板)
+		// 原型对象.isProtytypeOf(实例对象)  判断实例对象的原型是否为当前对象
+		// 构造函数：实例对象 = 类：实例
+
+
+		// 父类构造函数
+		function Sup(name){
+			this.name = name;
+		}
+		Sup.prototype = {
+			constructor : Sup,
+			say : function(){console.log(this.name);}
+		};
+		// 子类构造函数
+		function Sub(age){
+			this.age = age;
+		}
+		console.log(Sub.prototype.constructor); // Sub
+
+		// 让子类的原型对象等于父类的实例，即实现了js的继承
+		Sub.prototype = new Sup('chenxiaobin');
+		// 此时Sub的原型对象将包含一个指向指向另一个原型(Sup.protptype)的指针
+		// 同时另一个原型(Sup.prototype)也包含着指向另一个构造函数(new Sup())的指针
+		// 即子类的原型对象构造器变成了父类的原型对象构造器
+		console.log(Sub.prototype.constructor); // Sup
+		var sub = new Sub(22);
+		sub.say(); // chenxiaobin
+	</script>
+</body>
+</html>

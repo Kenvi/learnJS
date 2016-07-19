@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>26_oop-ext.js底层继承模拟</title>
+</head>
+<body>
+	<script>
+
+		function Person (name,age) {
+			this.name = name;
+			this.age = age;
+		};
+		Person.prototype = {
+			say : function(){console.log(this.name)},
+			// constructor : Person
+		};
+
+
+		// 混合继承：继承了2次父类属性与方法，1次父类原型对象
+		function Man(name,age,sex){
+			this.sex = sex;
+			Person.call(this,name,age); //第一次继承父类属性和方法			
+		};
+		Man.prototype = new Person(); //继承父类的原型对象
+		var man = new Man('lu',23,'男'); //第二次继承父类属性和方法
+		man.say(); // lu
+
+
+
+		// extend方法：只继承一次父类属性和方法和父类原型对象
+		function extend(sub,sup){
+			var F = new Function(); //创建一个空函数进行中转
+			
+			F.prototype = sup.prototype; //实现空函数的原型对象和超类的原型对象转换
+			sub.prototype = new F(); //原型继承
+			sub.prototype.constructor = sub; // 还原子类构造器
+			// 保存父类的原型对象：（1）方便解耦；（2）方便获得父类的原型对象
+			sub.superClass = sup.prototype; // 子类自定义一个静态属性接受父类原型对象
+			// 判断父类的原型对象的构造器
+			if(sup.prototype.constructor === Object.prototype.constructor){
+				sup.prototype.constructor = sup; 
+			}
+		}
+		function Boy(name,age,sex){
+			Boy.superClass.constructor.call(this,name,age); //彻底清除与父类的关系，降低耦合	
+			this.sex = sex;
+		}
+		extend(Boy,Person);		
+
+		Boy.prototype.say = function(){console.log('Boy.say!')};
+
+		var boy = new Boy('chen',22,'man');
+		boy.say(); // Boy.say!
+		Boy.superClass.say.call(boy); //chen
+	</script>
+</body>
+</html>

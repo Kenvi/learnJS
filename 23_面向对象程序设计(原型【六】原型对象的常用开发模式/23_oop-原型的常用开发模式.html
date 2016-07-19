@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>23_oop-原型的常用开发模式</title>
+</head>
+<body>
+	<script>
+		// 原型对象弊端
+		var Person_1 = function(){};
+		Person_1.prototype = {
+			name : 'chen',
+			age : 22,
+			job : 'codee',
+			firends : ['lu','zhang'],
+			say : function(){console.log(this.firends);}
+		};
+
+		var p1 = new Person_1();
+		var p2 = new Person_1();
+
+		p1.firends.push('xie');
+		p1.say(); // lu zhang xie
+		p2.say(); // lu zhang xie (原型的对象和方法都被实例共享)
+
+		// 组合使用原型和构造函数式
+		var Person_2 = function(name,age,job,firends){
+			this.name = name;
+			this.age = age;
+			this.job = job;
+			this.firends = firends;
+		}
+		Person_2.prototype = {
+			constroctor : Person_2,
+			say : function(){console.log(this.name);}
+		};
+
+		var p3 = new Person_2('pan',22,'lower',['chen','li']);
+		var p4 = new Person_2('chen',22,'coder',['pan','lu']);
+		p3.say(); // pan
+		p4.say(); // chen
+
+
+		// 动态原型模式(所有方法和属性都封装)		
+		var Person_3 = function(name,age,job,firends){
+			this.name = name;
+			this.age = age;
+			this.job = job;
+			this.firends = firends;
+			if(typeof this.say !== 'function'){
+				Person_3.prototype.say = function(){console.log('i am saying');}
+			}
+		}
+		var p5 = new Person_3('chen',22,'coder',['pan','lu']);
+		p5.say(); // i am saying
+		
+
+		// 稳妥构造函数式 durable object(稳妥对象) 适用非常安全的环境
+		// (1)没有公共属性 (2)不能使用this对象
+		var Person_4 = function(name,age,job){
+			var obj = {},
+				name = name,
+				age = age,
+				job = job;
+
+			obj.say = function(){
+				console.log(name);
+			};
+
+			return obj;
+		}
+		var p6 = new Person_4('xu',23,'teacher');
+		p6.say(); // xu
+	</script>
+</body>
+</html>

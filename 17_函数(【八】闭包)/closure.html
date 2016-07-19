@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>闭包</title>
+</head>
+<body>
+	
+</body>
+<script>
+	function fn(x) {
+		var temp = x;
+		return function(x){
+			temp += x;
+			console.log(temp);
+		}
+	}
+	var a = fn(50);
+	console.log(typeof a);//function
+	var b = fn(50)(4);//54
+	a(5);//55
+	a(10);//65
+	a(20);//85
+
+	// alert(a);
+	// a(5);
+	// a(50);
+
+	var name = 'chen';
+	var obj = {
+		name : 'xiaobin',
+		getName : function(){
+			return this.name;
+		},
+		getFirName : function(){
+			return function(){
+				return this.name;
+			}
+		},
+		getObjName : function(){
+			var o = this;
+			return function(){
+				return o.name;
+			}
+		}
+	}
+	console.log(obj.getName()); // xiaobin
+	console.log(obj.getFirName()()); // chen 相当于 var = obj.getFirName();k();
+	console.log(obj.getObjName()()); // xiaobin
+</script>
+</html>
