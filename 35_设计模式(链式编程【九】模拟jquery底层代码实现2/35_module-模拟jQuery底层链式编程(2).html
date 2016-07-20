@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>35_module-模拟jQuery底层链式编程</title>
+</head>
+<body>
+	<input type="button" id="inp" value="按钮">
+
+	<script>
+
+		// 模拟jQuery底层链式编程
+		(function (window,undefined) {			
+				
+			
+			function _$(arguments){ // 使用"_"作为私有对象
+				var idselector = /#\w+/; // 正则匹配id选择器
+				this.dom; // 接收得到的元素
+
+				if(idselector.test(arguments[0])){ // 匹配成功
+					this.dom = document.getElementById(arguments[0].substring(1));
+				}else{
+					throw new Error('arguments is err')
+				}
+			};
+
+			// 在Function原型对象上扩展可以实现链式编程的方法
+			Function.prototype.method = function(methodName,fn){
+				this.prototype[methodName] = fn;
+				return this; // 链式编程的关键
+			}
+
+			// 公共方法
+			_$.prototype = {
+				constructor : _$,
+				addEvent : function(type,fn){
+
+					// 注册事件
+					if(window.addEventListener){ // Firefox , Chrome
+						this.dom.addEventListener(type,fn);
+					}else if(window.attachEvent){ // IE
+						this.dom.attachEvent('on'+type,fn);
+					}
+					return this;
+				},
+				setStyle : function(prop,value){
+					this.dom.style[prop] = value;
+					return this;
+				}
+			};
+
+			
+			window.$ = _$; // $ 最常用对象，返回给全局
+
+			_$.onReady = function(fn){
+				// 实例化_$对象，注册到window
+				window.$ = function(){
+					return new _$(arguments);
+				}
+				// 执行传入的代码
+				fn();
+				// 实现链式编程
+				_$.method('addEvent',function(){}).method('setStyle',function(){});
+			};
+
+
+
+		})(window); //程序的入口 window传入作用域
+
+		$.onReady(function(){
+			var inp = $('#inp');
+			inp.addEvent('click',function(){
+				console.log('click');
+			}).setStyle('backgroundColor','red');
+		})
+
+	</script>
+</body>
+</html>

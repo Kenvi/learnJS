@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>33_module-简单链式调用</title>
+</head>
+<body>
+	<script>
+
+		// (1) 简单链式调用
+		function Dog () {
+			this.run = function(){console.log('dog is running');return this};
+			this.eat = function(){console.log('dog is eating');return this};
+			this.sleep = function(){console.log('dog is sleeping');return this};
+		}
+		var dog = new Dog();
+		dog.run().eat().sleep(); //dog is running dog is eating dog is sleeping
+
+	</script>
+</body>
+</html>

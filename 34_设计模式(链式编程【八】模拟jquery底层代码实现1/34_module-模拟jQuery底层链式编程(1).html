@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>35_module-模拟jQuery底层链式编程</title>
+</head>
+<body>
+	<script>
+
+		// 模拟jQuery底层链式编程
+		(function (window,undefined) {			
+				
+			
+			function _$(arguments){ // 使用"_"作为私有对象
+
+			};
+
+			// 在Function原型对象上扩展可以实现链式编程的方法
+			Function.prototype.method = function(methodName,fn){
+				this.prototype[methodName] = fn;
+				return this; // 链式编程的关键
+			}
+
+			// 公共方法
+			_$.prototype = {
+				constructor : _$,
+				addEvent : function(){alert('addEvent has been used!');return this;},
+				setStyle : function(){alert('setStyle has been used!');return this;}
+			};
+
+			
+			window.$ = _$; // $ 最常用对象，返回给全局
+
+			_$.onReady = function(fn){
+				// 实例化_$对象，注册到window
+				window.$ = function(){
+					return new _$(arguments);
+				}
+				// 执行传入的代码
+				fn();
+				// 实现链式编程
+				_$.method('addEvent',function(){}).method('setStyle',function(){});
+			};
+
+
+
+		})(window); //程序的入口 window传入作用域
+
+		$.onReady(function(){
+			$('e').addEvent().setStyle(); // alert('addEvent has been used!') alert('setStyle has been used!')
+		})
+
+	</script>
+</body>
+</html>
