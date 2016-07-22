@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>oop-工厂模式和函数构造式创建类.html</title>
+</head>
+<body>
+	<script>
+
+		// 工厂模式
+		function obj_1 (name,age,sex) {
+			var obj = {};
+			obj.name = name;
+			obj.age = age;
+			obj.sex = sex;
+			return obj;
+		};
+		var p1 = obj_1('chen',22,'man');
+		var p2 = obj_1('lu',23,'man');
+
+		console.log(p1.name,p2.name);//chen lu
+		console.log(p1 instanceof obj_1);//false
+
+		// 构造函数式
+		function Person(name,age,sex){
+			this.name = name;
+			this.age = age;
+			this.sex = sex;
+			this.say = function(){
+				console.log(this.name);
+			}
+		}
+		var p3 = new Person('pan',22,'woman');
+		p3.say(); // pan
+		console.log(p3 instanceof Person); //true p3是通过Person类创建出来的一个实例
+
+		// 创建实例的三种方法
+
+		// 1 如p3样式的构造函数
+		var p4 = new Person('zhang',23,'man');
+
+		// 2 作为普通函数取调用
+		var p5 = Person('liang',23,'woman');
+		//p5.say();  // 报错 Cannot read property 'say' of undefined ; 此时Person为全局对象
+		say(); // liang
+
+		// 3 在另一个对象的作用域中调用 call apply
+		var p6 = {};
+		// Person.call(p6,'xiaobin',22,'man');
+		Person.apply(p6,['xiaobin',22,'man']);
+		p6.say(); // xiaobin
+
+
+	</script>
+</body>
+</html>

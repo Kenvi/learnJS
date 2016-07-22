@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>36_module-实现简单工厂</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script>
+	<script>
+
+		var CarShop = function () {};
+		CarShop.prototype = {
+			constructor : CarShop,
+			sellCar : function(type){
+				var car ;
+				switch(type){
+					case 'Benz' : car = new Benz(); break;
+					case 'Bmw' : car = new Bmw(); break;
+					case 'Lexus' : car = new Lexus(); break;
+					default : 'Car has not found!';
+				}
+				CP.Interface.ensureImplements(car,CarInterface); // 检验接口实现
+				return car ;
+			}
+		};
+
+		var CarInterface = new CP.Interface('CarInterface',['start','run']);
+
+		// Class benz bmw lexus
+		var Benz = function(){};
+		Benz.prototype.start = function(){console.log('Benz has started!')};
+		Benz.prototype.run = function(){console.log('Benz has run!')};
+
+		var Bmw = function(){};
+		Bmw.prototype.start = function(){console.log('Bmw has started!')};
+		Bmw.prototype.run = function(){console.log('Bmw has run!')};
+
+		var Lexus = function(){};
+		Lexus.prototype.start = function(){console.log('Lexus has started!')};
+		Lexus.prototype.run = function(){console.log('Lexus has run!')};
+
+
+		// 测试
+		var shop = new CarShop();
+		var car = shop.sellCar('Lexus').start(); // Lexus has started!
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>38_module-实现简单工厂(3)</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script> 
+	<script>
+
+	// 万事万物皆对象：卖车的商店 -> 卖车 -> 生产车 -> Factory
+
+		// 卖车的商店
+		var CarShop = function () {};
+		CarShop.prototype = {
+			constructor : CarShop,
+			sellCar : function(type){
+				// 销售推荐
+				var car = CarFactory.creatCar(type);
+				// 车保、售后
+				return car ;
+			}
+		};
+
+		// 生产车的工厂（单体模式）
+		var CarFactory = {
+			creatCar : function(type){
+				var car ;
+				switch(type){
+					case 'Benz' : car = new Benz(); break;
+					case 'Bmw' : car = new Bmw(); break;
+					case 'Lexus' : car = new Lexus(); break;
+					default : 'Car has not found!';
+				}
+				CP.Interface.ensureImplements(car,CarInterface); // 检验接口实现
+				return car ;
+			}
+		};
+
+		var CarInterface = new CP.Interface('CarInterface',['start','run']); // 实例化接口
+
+		// Super Class implemwnts CarInterface
+		var BaseCar = function(){};
+		BaseCar.prototype = {
+			constructor : BaseCar,
+			start : function(type){
+				console.log(this.constructor.name + ' has started!');
+			},
+			run : function(type){
+				console.log(this.constructor.name + 'has run!');
+			}
+		};
+
+		// Class benz bmw lexus
+		function Benz(){};
+		CP.extend(Benz,BaseCar);
+		
+		function Bmw(){};	
+		CP.extend(Bmw,BaseCar);		
+
+		function Lexus(){};
+		CP.extend(Lexus,BaseCar);
+		Lexus.prototype.drive = function(){console.log("Lexus's driver!")};		
+		
+
+
+		// 测试
+		var shop = new CarShop();
+		shop.sellCar('Benz').start(); // Benz has started!
+
+		var lexus = shop.sellCar('Lexus'); 		
+		lexus.drive();// Lexus's driver!
+
+	</script>
+</body>
+</html>

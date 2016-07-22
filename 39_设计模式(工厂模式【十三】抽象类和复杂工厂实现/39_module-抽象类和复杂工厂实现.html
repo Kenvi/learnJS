@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>39_module-抽象类和复杂工厂实现</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script> 
+	<script>
+
+	// 万事万物皆对象：要买什么车 -> 去什么商店 -> 商店 -> 卖车 -> 生产车 -> Factory
+
+		// 卖车的商店 奔驰 宝马 雷克萨斯
+
+		// Super Shop 卖车 (抽象类)
+		var CarShop = function () {};
+		CarShop.prototype = {
+			constructor : CarShop,
+			sellCar : function(type){				
+				this.abstractSellCar(type);
+			},
+			abstractSellCar : function(){
+				throw new Error('This method is abstract.');
+			}
+		};
+
+		// BenzCarShop
+		function BenzCarShop(){};
+		CP.extend(BenzCarShop,CarShop);
+		BenzCarShop.prototype = {
+			constructor : BenzCarShop,
+			sellCar : function(type){
+				var car , types = ['Benz'];
+				for(t in types){
+					if(types[t] === type){
+						car = CarFactory.creatCar(type);
+					}else{
+						throw new Error('The type of this car has not found!');						
+					}
+				}
+				return car;
+			}
+		};
+
+		// BmwCarShop
+		function BmwCarShop(){};
+		CP.extend(BmwCarShop,CarShop);
+		BmwCarShop.prototype = {
+			constructor : BmwCarShop,
+			sellCar : function(type){
+				var car , types = ['Bmw'];
+				for(t in types){
+					if(types[t] === type){
+						car = CarFactory.creatCar(type);
+					}else{
+						throw new Error('The type of this car has not found!');						
+					}
+				}
+				return car;
+			}
+		};
+
+		// LexusCarShop
+		function LexusCarShop(){};
+		CP.extend(LexusCarShop,CarShop);
+		LexusCarShop.prototype = {
+			constructor : LexusCarShop,
+			sellCar : function(type){
+				var car , types = ['Lexus'];
+				for(t in types){
+					if(types[t] === type){
+						car = CarFactory.creatCar(type);
+					}else{
+						throw new Error('The type of this car has not found!');
+					}
+				}
+				return car;
+			}
+		};
+
+		// 生产车的工厂（单体模式）
+		var CarFactory = {
+			creatCar : function(type){
+				var car = eval('new '+type+'()'); // new 右面必须有空格
+				
+				CP.Interface.ensureImplements(car,CarInterface); // 检验接口实现
+				return car ;
+			}
+		};
+
+		var CarInterface = new CP.Interface('CarInterface',['start','run']); // 实例化接口
+
+		// Super Class implemwnts CarInterface
+		var BaseCar = function(){};
+		BaseCar.prototype = {
+			constructor : BaseCar,
+			start : function(type){
+				console.log(this.constructor.name + ' has started!');
+			},
+			run : function(type){
+				console.log(this.constructor.name + 'has run!');
+			}
+		};
+
+		// Class benz bmw lexus
+		function Benz(){};
+		CP.extend(Benz,BaseCar);
+		
+		function Bmw(){};	
+		CP.extend(Bmw,BaseCar);		
+
+		function Lexus(){};
+		CP.extend(Lexus,BaseCar);
+		Lexus.prototype.drive = function(){console.log("Lexus's driver!")};		
+		
+
+
+		// 测试
+		var shop = new LexusCarShop();
+		var car = shop.sellCar('Lexus');
+		car.start(); // Lexus has started!
+
+	</script>
+</body>
+</html>
