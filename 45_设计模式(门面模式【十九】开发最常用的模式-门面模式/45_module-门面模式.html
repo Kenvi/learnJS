@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>45_module-门面模式</title>
+</head>
+<body>
+	<div id="div-1">我是div-1</div>
+	<div id="div-2">我是div-2</div>
+	<div id="div-3">我是div-3</div>
+	<script src="../resource/commom.js"></script>
+	<script>
+
+		// 门面模式：简化API接口(如事件)
+
+		window.onload = function() {
+
+			// 给多个元素设置同样样式
+			setStyle(['div-1','div-2','div-3'],'text-align','center');
+
+			// 给多个元素设置多种样式
+			setCss(['div-1','div-2','div-3'],{'display':'inline-block','width':'100px','line-height':'50px','border':'1px solid #999'})
+		};
+
+		// 简单的门面模式
+		var setStyle = function(elementsId,prop,value){
+			for(var i=0;i<elementsId.length;i++){
+				document.getElementById(elementsId[i]).style[prop] = value;
+			}
+		};
+
+		// 门面模式的css设置方法
+		var setCss = function(elementsId,options){
+
+			// for(var i=0;i<elementsId.length;i++){
+			// 	for(var o in options){
+			// 		if(!options.hasOwnProperty(o)){
+			// 			continue;
+			// 		}
+			// 		document.getElementById(elementsId[i]).style[o] = options[o];
+			// 	}
+			// }
+			
+			// or
+
+			for(var o in options){
+				if(!options.hasOwnProperty(o)){
+					continue;
+				}
+				setStyle(elementsId,o,options[o]);
+			}
+
+		};
+	</script>
+</body>
+</html>
