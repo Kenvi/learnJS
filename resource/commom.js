@@ -93,3 +93,34 @@ CP.EventUtil = {
 		}
 	}
 };
+
+
+/*
+* 扩展Arry的原型对象，添加变量数组的每一个函数，并让每个元素执行fn函数
+* 手动实现array each方法 能遍历多维数组
+*/
+Array.prototype.each  = function(fn){
+	try{
+
+		this.i || (this.i=0);//计数器 记录当前遍历的元素位置
+
+		if(this.length>0 && fn.constructor == Function){ //数组长度不能为零且参数必须为函数
+			while(this.i < this.length){
+				var e = this[this.i];
+				if(e && e.constructor == Array){ // 已获取当前元素且当前元素为数组
+					e.each(fn); // 继续递归操作
+				}else{
+					fn.call(e,e); // 当前元素不为数组 将其作为参数传递给fn函数回调
+				}
+				this.i++;
+			}
+			this.i = null; // 释放内存 垃圾回收
+		}
+
+	}catch(err){
+		console.log(err);
+	}
+	
+	return this;
+
+};

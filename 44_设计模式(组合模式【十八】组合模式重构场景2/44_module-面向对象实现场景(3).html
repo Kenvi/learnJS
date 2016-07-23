@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>44_module-面向对象实现场景(3)</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script>
+	<script>
+		// 组合模式
+		/**
+		 * 组合模式适用的场景和特点
+		 * 场景：
+		 * 1 存在一批组织成某种层次体系的对象
+		 * 2 希望对这批对象或其中的一部分对象实施一个操作
+		 *
+		 * 应用特点：
+		 * 1 组合模式中只有两种类型对象：组合对象和叶子对象
+		 * 2 两种对象都实现同一批接口
+		 * 3 一般会在组合对象中调用其方法并隐式调用"下级对象"的方法(采用递归的形式)
+		 *
+		**/
+
+		/*
+		 * 场景模拟
+		 *
+		 *   -> 总公司
+		 *
+		 *             -> 上海分公司
+		 *                           -> 经理
+		 *                                    -> 罗丽红
+		 *             -> 广州分公司
+		 *                           -> 销售
+		 *                                    -> 张一山
+		 *                                    -> 张二山
+		 *                                    -> 张三山
+		 *                           -> 开发
+		 *                                    -> 鄣泰明
+		 *                                    -> 鲁勇横
+		 *                                    -> 成啸膑
+		 *                           -> 行政
+		 *                                    -> 陈胜
+		 *                                            -> 张四山
+		 *                                            -> 张五山
+		 *                                            -> 张六山
+		 *
+		 *   实际的任务具体落实到人，只有人才具有具体的方法实现
+		 *
+		*/
+
+		// 接口实例化
+		var CompostieInterface = new CP.Interface('CompostieInterface',['addChild','getChild']);
+		var LeafInterface = new CP.Interface('LeafInterface',['hardWorking','sleeping']);
+
+		// 组合对象
+		var Compostie = function(name){ 
+			this.name = name;
+			this.type = 'Compostie'; // 声明类型
+			this.children = [];
+		};
+		Compostie.prototype = {
+			constructor : Compostie,
+			addChild : function(child){
+				this.children.push(child);
+				return this;
+			},
+			getChild : function(name){
+				var elements = [];
+				// 判断对象是否为Leaf对象，是则添加到elements，否则继续递归
+				var pushLeaf = function(item){
+					if(item.type === 'Compostie'){
+						item.children.each(arguments.callee); // 继续调用内部函数 
+					}else if(item.type === 'Leaf'){
+						elements.push(item);
+					}
+				};
+
+
+				if(name && this.name!==name){ // 根据name让指定name下的Leaf对象执行操作
+					this.children.each(function(item){
+						if(item.name === name){
+							pushLeaf(item);
+						}else if(item.name !== name && item.type === 'Compostie'){
+							item.children.each(arguments.callee); // 继续调用内部函数													
+						}
+					});
+				}else{ // 全体Leaf对象执行操作
+					this.children.each(pushLeaf);
+				}
+				return elements;
+			},
+			hardWorking : function(name){
+				// 获取所有Leaf类型的对象
+				var leafObj = this.getChild(name);
+				if(leafObj.length === 0){
+					console.log('The Object "'+name+'" has not found!');
+					return;
+				}
+				for(var i=0;i<leafObj.length;i++){
+					leafObj[i].hardWorking();
+				}
+			},
+			sleeping : function(name){
+				var leafObj = this.getChild(name);
+				if(leafObj.length === 0){
+					console.log('The Object "'+name+'" has not found!');
+					return;
+				}
+				for(var i=0;i<leafObj.length;i++){
+					leafObj[i].sleeping();
+				}
+			}
+		};
+
+		// 叶子对象
+		var Leaf = function(name){ 
+			this.name = name;
+			this.type = 'Leaf'; // 声明类型
+		};
+		Leaf.prototype = {
+			constructor : Leaf,
+			addChild : function(child){
+				throw new Error('This method can not use in Leaf object!');
+			},
+			getChild : function(name){
+				if(this.name = name){
+					return this;
+				}else{
+					return null;
+				}
+			},
+			hardWorking : function(){
+				console.log(this.name + ' is working hard!');				
+			},
+			sleeping : function(){
+				console.log(this.name + ' can have a sleep.');
+			}
+		};
+
+		// 测试
+		var p1 = new Leaf('chenxiaobin');
+		var p2 = new Leaf('luyongheng');
+		var p3 = new Leaf('zhangtaiming');
+		var p4 = new Leaf('zhangyishan');
+		var p5 = new Leaf('zhangershan');
+		var p6 = new Leaf('zhangsanshan');
+		var p7 = new Leaf('zhangsishan');
+		var p8 = new Leaf('zhangwushan');
+		var p9 = new Leaf('zhangliushan');
+		var p10 = new Leaf('chensheng');
+		var p11 = new Leaf('luolihong');
+
+		var dept1 = new	Compostie('develop');
+		dept1.addChild(p1).addChild(p2).addChild(p3);		
+		var dept2 = new	Compostie('sellshop');		
+		dept2.addChild(p4).addChild(p5).addChild(p6);
+		var dept4 = new Compostie('hr');
+		dept4.addChild(p7).addChild(p8).addChild(p9);
+		var dept3 = new Compostie('hrleader');
+		dept3.addChild(p10).addChild(dept4);
+		var dept5 = new Compostie('manager');
+		dept5.addChild(p11);
+
+		var org1 = new Compostie('GZ');
+		org1.addChild(dept1).addChild(dept2).addChild(dept3);
+		var org2 = new Compostie('SH');
+		org2.addChild(dept5);
+
+		var org = new Compostie('BAT');
+		org.addChild(org1).addChild(org2);
+
+		org.hardWorking('SH'); // luolihong is working!
+	</script>
+</body>
+</html>

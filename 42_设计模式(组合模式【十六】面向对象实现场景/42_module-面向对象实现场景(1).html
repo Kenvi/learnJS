@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>42_module-面向对象实现场景(1)</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script>
+	<script>
+
+		// 组合模式
+		/*
+		 * 场景模拟
+		 *
+		 *   -> 公司
+		 *             -> 财务
+		 *                       -> 张一山
+		 *                       -> 张二山
+		 *                       -> 张三山
+		 *             -> 销售
+		 *                       -> 鄣泰明
+		 *                       -> 鲁勇横
+		 *                       -> 成啸膑
+		 *
+		 *   实际的任务具体落实到人，只有人才具有具体的方法实现
+		 *
+		*/
+
+
+		// 公司
+		var Org = function (name){
+			this.name = name;
+			this.depts = [];
+		};
+		Org.prototype = {
+			constructor : Org,
+			addDepts : function(dept){
+				this.depts.push(dept);
+				return this;
+			},
+			getDepts : function(){
+				return this.depts;
+			}
+		};
+
+		// 部门
+		var Dept = function (name){
+			this.name = name;
+			this.persons = [];
+		};
+		Dept.prototype = {
+			constructor : Dept,
+			addPersons : function(person){
+				this.persons.push(person);
+				return this;
+			},
+			getPersons : function(){
+				return this.persons;
+			}
+		};
+
+		// 人员
+		var Person = function (name){
+			this.name = name;
+		};
+		Person.prototype = {
+			constructor : Person,
+			hardWorking : function(){
+				console.log(this.name + ' is working hard!');
+			},
+			sleeping : function(){
+				console.log(this.name + ' can have a sleep.');
+			}
+		};
+
+		// 测试
+		var p1 = new Person('chenxiaobin');
+		var p2 = new Person('luyongheng');
+		var p3 = new Person('zhangtaiming');
+		var p4 = new Person('zhangyishan');
+		var p5 = new Person('zhangershan');
+		var p6 = new Person('zhangsanshan');
+
+		var dept1 = new	Dept('develop');
+		dept1.addPersons(p1).addPersons(p2).addPersons(p3);
+		var dept2 = new	Dept('sellshop');
+		dept2.addPersons(p4).addPersons(p5).addPersons(p6);
+
+		var org = new Org('BAT');
+		org.addDepts(dept1).addDepts(dept2);
+
+		// 具体地让一个人努力工作
+		for(var i=0,depts=org.getDepts();i<depts.length;i++){
+			for(var j=0,p=depts[i].getPersons();j<p.length;j++){
+				if(p[j].name === 'chenxiaobin'){
+					p[j].hardWorking(); // chenxiaobin is working hard!
+				}
+			}
+		}
+
+	</script>
+</body>
+</html>
