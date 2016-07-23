@@ -71,3 +71,25 @@ CP.extend = function (sub,sup){
 		sup.prototype.constructor = sup; 
 	}
 };
+
+
+/*
+* 单体模式
+* 实现一个跨浏览器的事件处理程序
+*/
+CP.EventUtil = {
+	addHandler : function(element,type,handler){
+		if(element.addEventListener){ // Firefox Chrome
+			element.addEventListener(type,handler,false);
+		}else if(element.attachEvent){ // IE
+			element.attachEvent('on'+type,handler);
+		}
+	},
+	removeHandler : function(element,type,handler){
+		if(element.removeEventListener){ // Firefox Chrome
+			element.removeEventListener(type,handler,false);
+		}else if(element.detachEvent){ // IE
+			element.detachEvent('on'+type,handler);
+		}
+	}
+};

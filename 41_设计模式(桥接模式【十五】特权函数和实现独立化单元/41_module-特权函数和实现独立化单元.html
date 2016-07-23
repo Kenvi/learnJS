@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>41_module-特权函数和实现独立化单元</title>
+</head>
+<body>
+	<script>
+
+		// 桥模式：特权函数
+		var PublicClass = function () {
+			// 私有变量
+			var name = 'chenxiaobin';
+
+			// 特权函数
+			this.getName = function(){
+				return name;
+			}
+
+			// 私有方法
+			var privateMethod = function(){
+				console.log('This is a private method.');
+			}
+
+			// 特权函数访问私有方法的独立单元
+			this.bridgeMethod = function(){
+				return privateMethod();
+			}
+		}
+
+		// 测试
+		var func = new PublicClass();
+		console.log(func.getName()); // chenxiaobin
+		func.bridgeMethod(); // This is a private method.
+
+
+		// 桥模式：把多个单体组织在一起
+		var Class_1 = function(a,b,c){
+			this.a = a;
+			this.b = b;
+			this.c = c;
+		};
+		var Class_2 = function(d,e){
+			this.d = d;
+			this.e = e;
+		}
+
+		var BridgeClass = function(a,b,c,d,e){
+			this.class_1 = new Class_1(a,b,c);
+			this.class_2 = new Class_2(d,e);
+		}
+
+	</script>
+</body>
+</html>

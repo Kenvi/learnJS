@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>40_module-事件监听回调机制分离</title>
+</head>
+<body>
+
+	<input type="button" id="inp" value="data">
+
+	<script src="../resource/commom.js"></script>
+	<script src="../resource/jquery.min.js"></script>
+
+	<!-- 桥接模式 -->
+	<script>
+
+		// 桥接模式：分离抽象和现实，使其可以完全独立变化
+		// 应用：事件监听回调机制
+
+		// 传统方式
+		$(function(){
+			var inp = document.getElementById('inp');
+			// 用事件注册方式向元素添加事件
+			CP.EventUtil.addHandler(inp,'click',sendReq);
+
+			function sendReq(){
+				// $.post('Url',{msg:this.value},function(res){
+
+				// });
+				console.log('已发送： ' + this.value);
+			};
+		});
+
+		// 利用桥模式分离两个业务逻辑单元
+		$(function(){
+
+			// (1)前台业务逻辑
+			var inp = document.getElementById('inp');
+			// 用事件注册方式向元素添加事件
+			CP.EventUtil.addHandler(inp,'click',bridgeHandler);
+
+			// 桥模式
+			function bridgeHandler(){
+				var msg = this.value;
+				sendReq(msg);
+			};
+
+			// (2)后台业务逻辑
+			function sendReq(msg){
+				// $.post('Url',{msg:this.value},function(res){
+
+				// });
+				console.log('利用桥模式发送： ' + msg);
+			};
+
+			// 单元测试
+			sendReq('桥模式优点：单元测试数据，不需要前台点击才发触发，而是自动发送')
+		});
+
+	</script>
+</body>
+</html>
