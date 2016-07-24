@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>49_module-享元模式优化内存(2)</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script>
+	<script>
+
+		// 享元模式：优化的设计模式(优化时间[代码的运行时间]，优化空间[web浏览器内存])
+
+		// 出厂商 型号 出厂日期 拥有者 车牌号 登记日期
+		// 享元模式：内在数据static(出厂商，型号，出厂日期) 外在数据(拥有者，车牌号，最近登记日期)
+		var Car = function(make,model,year){
+			this.make = make;
+			this.model = model;
+			this.year = year;
+		};
+		Car.prototype = {
+			constructor : Car,
+			getMake : function(){
+				return this.make;
+			},
+			getModel : function(){
+				return this.model;
+			},
+			getYear : function(){
+				return this.year;
+			},
+			getMake : function(){
+				return this.make;
+			}
+		};
+
+		// 工厂模式(闭包工厂)
+		var CarFactory = (function(){
+			// 承装已经生产好的车
+			var createdCars = {}; 
+			return {
+				createCar : function(make,model,year){
+					if(createdCars[make+model+year]){
+						return createdCars[make+model+year];
+					}else{
+						var car = new Car(make,model,year);
+						createdCars[make+model+year] = car;
+						return car;
+					}
+				}
+			}
+		})();
+
+		// 单体模式(结合外在数据和内在数据)
+		var CarRecordManager = (function(){
+			// 承装登记好的车
+			var CarRecordDataBase = {};
+			return {
+				addCarRecord : function(make,model,year,owner,tag,renewDate){
+					var car = CarFactory.createCar(make,model,year);
+					CarRecordDataBase[tag] = {
+						owner : owner,
+						renewDate : renewDate,
+						car : car
+					};
+				},
+				renewRegistration : function(tag,newRenewDate){
+					CarRecordDataBase[tag].renewDate = newRenewDate;
+				}
+			};
+		})();
+
+		// 测试：建造五百万辆车
+		var carArr = [];
+		var stime = new Date().getTime();
+		for(var i=0;i<5000000;i++){
+		// 	runtime : 1123ms  web浏览器占用内存(Chrome) : 212 mb
+		// 	carArr.push(new Car('Lexus','nx','2015-10-16','chenxiaobin','NX5200','2016-07-24'));
+		// 享元模式测试
+		// 	runtime : 2791ms  web浏览器占用内存(Chrome) : 36 mb
+			carArr.push(CarRecordManager.addCarRecord('Lexus','nx','2015-10-16','chenxiaobin','NX5200','2016-07-24'));
+		}
+		var etime = new Date().getTime();
+		alert(etime - stime);
+
+
+	</script>
+</body>
+</html>

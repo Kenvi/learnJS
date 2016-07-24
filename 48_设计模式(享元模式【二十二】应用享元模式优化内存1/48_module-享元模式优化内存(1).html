@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>48_module-享元模式优化内存(1)</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script>
+	<script>
+
+		// 享元模式：优化的设计模式(优化时间[代码的运行时间]，优化空间[web浏览器内存])
+
+		// 出厂商 型号 出厂日期 拥有者 车牌号 登记日期
+		var Car = function(make,model,year,owner,tag,renewDate){
+			this.make = make;
+			this.model = model;
+			this.year = year;
+			this.owner = owner;
+			this.tag = tag;
+			this.renewDate = renewDate;
+		};
+		Car.prototype = {
+			constructor : Car,
+			getMake : function(){
+				return this.make;
+			},
+			getModel : function(){
+				return this.model;
+			},
+			getYear : function(){
+				return this.year;
+			},
+			getMake : function(){
+				return this.make;
+			},
+			renewRegistration : function(newRenewDate){
+				this.renewDate = newRenewDate;
+			}
+		};
+
+		// 测试：建造五百万辆车
+		var carArr = [];
+		var stime = new Date().getTime();
+		for(var i=0;i<5000000;i++){
+			// runtime : 1123ms  web : 212 mb
+			carArr.push(new Car('Lexus','nx','2015-10-16','chenxiaobin','NX5200','2016-07-24'));
+		}
+		var etime = new Date().getTime();
+		alert(etime - stime);
+
+
+	</script>
+</body>
+</html>
