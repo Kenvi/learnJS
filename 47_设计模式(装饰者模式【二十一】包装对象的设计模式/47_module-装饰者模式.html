@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>47_module-装饰者模式</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script>
+	<script>
+
+		// 装饰者模式：保证不改变原有对象的基础上去扩展相应的方法
+		// 实现相同的接口
+		// 需要有子类
+
+		var CarInterface = new CP.Interface('CarInterface',['getPrice','assemble']);
+
+		var Car = function(car){
+			this.car = car;
+			CP.Interface.ensureImplements(this,CarInterface);
+		};
+		Car.prototype = {
+			constructor : Car,
+			getPrice : function(){
+				return 200000;
+			},
+			assemble : function(){
+				console.log('组装汽车.');
+			}
+		};
+
+		// 新需求：light icebox ... 
+		var LightDecorator = function(car){ // 参数car为原始对象
+			// 借用构造函数继承
+			LightDecorator.superClass.constructor.call(this,car);
+		};
+		CP.extend(LightDecorator,Car); // 原型继承
+		LightDecorator.prototype = {
+			constructor : LightDecorator,
+			getPrice : function(){
+				return this.car.getPrice() + 10000;
+			},
+			assemble : function(){
+				console.log('组装车灯.');
+			}
+		};
+
+		var IceBoxDecorator = function(car){ // 参数car为原始对象
+			// 借用构造函数继承
+			IceBoxDecorator.superClass.constructor.call(this,car);
+		};
+		CP.extend(IceBoxDecorator,Car); // 原型继承
+		IceBoxDecorator.prototype = {
+			constructor : IceBoxDecorator,
+			getPrice : function(){
+				return this.car.getPrice() + 20000;
+			},
+			assemble : function(){
+				console.log('组装车载冰箱.');
+			}
+		};
+
+		// 测试
+		var car = new Car();
+		console.log(car.getPrice()); // 200000
+		car.assemble(); // 组装汽车.
+
+		car = new LightDecorator(car);
+		console.log(car.getPrice()); // 210000
+		car.assemble(); // 组装车灯.
+
+		car = new IceBoxDecorator(car);
+		console.log(car.getPrice()); // 230000
+		car.assemble(); // 组装车载冰箱.
+
+
+		// 装饰者模式除了应用在类上，还可以应用在函数上
+
+		// 返回一个当前时间的字符串表示形式
+		var getDate = function(){
+			return (new Date()).toString();
+		};
+
+		// 包装函数(装饰者函数)
+		function upperCaseDecorator(fn){
+			return function(){
+				return fn.apply(this,arguments).toUpperCase();
+			}
+		};
+
+		// 测试
+		console.log(getDate()); // 当前时间
+		var getDecoratorData = upperCaseDecorator(getDate);
+		console.log(getDecoratorData()); // 当前时间大写模式
+	</script>
+</body>
+</html>
