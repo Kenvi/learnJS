@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>46_module-适配器模式</title>
+</head>
+<body>
+	<input type="text" id="inp-1" />
+	<input type="text" id="inp-2" />
+
+	<!-- // <script src="../resource/commom.js"></script> -->
+	<script>
+
+		// 适配器模式
+		// 模拟：根据id获得指定的dom元素
+		// Prototype $ function (不需要传递任何参数：需要什么id即传递什么参数)
+		function $(){
+			var elements = [];
+			for(var i=0;i<arguments.length;i++){
+				var element = arguments[i];
+				if(typeof element === 'string'){
+					element = document.getElementById(element);
+				}
+				if(arguments.length === 1){
+					return element;
+				}
+				elements.push(element);
+			}
+			return elements;
+		};
+
+		// YUI get function (传递了一个参数：String或Array类型)
+		var YAHOO = {};
+		YAHOO.get = function(el){
+			if(typeof el === 'string'){
+				return document.getElementById(el);
+			}
+			if(el instanceof Array){
+				var elements = [];
+				for (var i = 0; i < el.length; i++) {
+					elements[elements.length] = YAHOO.get(el[i]);
+				};
+				return elements;
+			}
+			if(el){
+				return el;
+			}
+			return null;
+		}
+
+		YAHOO.get = YUIToPrototypeAdapter;
+		function YUIToPrototypeAdapter(){
+			if(arguments.length === 1){
+				var e = arguments[0];
+				return $.apply(window,e instanceof Array ? e : [e]);
+			}else{
+				return $.apply(window,arguments);
+			}
+		};
+
+		// 测试
+		window.onload = function(){
+			var inp_2 = YAHOO.get(['inp-2','inp-1']);
+			alert(inp_2);
+		}
+
+	</script>
+</body>
+</html>
