@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>日历</title>
+	<style>
+	  td{border: 1px solid #666;padding: 20px 65px;border-left:none;border-bottom: none;}
+	  tr td:first-child{border: 1px solid #666;border-bottom: none;}
+	  tr:last-child td{border-bottom: 1px solid #666;}
+	  div{width:1024px;height:600px;margin:50px auto;}
+	  h3{text-align: center;}
+	</style>
+</head>
+<body>
+	<div>
+		<h3 id="title"></h3>
+		<table border="0" cellpadding="0" cellspacing="0" id="content">
+			<tr><td>日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td></tr>
+			
+		</table>
+	</div>
+	<script src="../resource/jquery.min.js"></script>
+	<script>
+		(function() {
+			var date = new Date();
+			var Y = date.getFullYear();
+			var M = date.getMonth() + 1;
+			var D = date.getDay();
+			var days;
+			if(M===1 || M===3 || M===5 || M===7 || M===8 || M===10 || M===12){
+				days = 31;
+			}else if(M===4 || M===6 || M===9 || M===11){
+				days = 30;
+			}else if(M===2 && Y%4===0){
+				days = 29;
+			}else{
+				days = 28;
+			}
+
+			$('h3').html(Y+'年'+M+'月')
+
+			var html = '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+			$('#content').append(html);			
+			var F = (new Date(Y.toString()+'-'+M.toString()+'-'+1)).getDay(); // 当月第一天
+			var addDay = $('#content tr:last td').eq(F);
+			addDay.html(1);
+			for(var i=2;i<days+1;i++){
+				
+				if(addDay.parent().find('td').index(addDay) === 6){
+					$('#content').append(html);			
+					addDay = $('#content tr:last td').eq(0);
+					addDay.html(i);					
+				}else{
+					addDay = addDay.next();
+					addDay.html(i);
+				}
+
+				if(i==date.getDate()){
+					addDay.css({'background':'#999','color':'#fff'});
+				}
+			}
+
+		})(jQuery);
+	</script>
+</body>
+</html>
