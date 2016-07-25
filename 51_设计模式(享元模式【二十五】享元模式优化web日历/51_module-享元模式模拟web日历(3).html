@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>51_module-享元模式模拟web日历(3)</title>
+</head>
+<body>
+	<div id="mydiv"></div>
+	<script src="../resource/commom.js"></script>
+	<script>
+
+		var CalendarInterface = new CP.Interface('CalendarInterface',['display']);
+
+		var CalendarYear = function(year,parent){
+			this.year = year;
+			this.element = document.createElement('div');
+			this.element.style.display = 'none';
+			parent.appendChild(this.element);
+
+			// 判断是否为闰年
+			var isLeapYear = function(y){
+				return (y>0) && !(y%4) && (y%100) || !(y%400)
+			}
+
+			this.months = [];
+			this.numDays = [31,isLeapYear(this.year)?29:28,31,30,31,30,31,31,30,31,30,31];
+
+			for(var i=0;i<12;i++){
+				this.months[i] = new CalendarMonth(i,this.numDays[i],this.element);
+			}
+		};
+		CalendarYear.prototype = {
+			constructor : CalendarYear,
+			display : function(){
+				for(var i=0;i<this.months.length;i++){
+					this.months[i].display();
+				}
+				this.element.style.display = 'block';
+			}
+		};
+
+		var CalendarMonth = function(monthNum,monthDays,parent){
+			this.month = monthNum;
+			this.element = document.createElement('table');
+			this.element.style.display = 'none';
+			parent.appendChild(this.element);
+
+			this.weeks = [];
+			var len = monthDays%4 === 0 ? monthDays/4 : monthDays/4+1;
+			for(var i=0;i<len;i++){
+				this.weeks[i] = new CalendarWeek(i,this.weeks[i],this.element);
+			}
+		};
+		CalendarMonth.prototype = {
+			constructor : CalendarMonth,
+			display : function(){
+				for(var i=0;i<this.weeks.length;i++){
+					this.weeks[i].display(i+1,this.element);
+				}
+				this.element.style.display = 'block';
+			}
+		};
+
+		var CalendarWeek = function(weekNum,weeks,parent){
+			this.week = weekNum;
+			this.element = document.createElement('tr');
+			this.element.style.display = 'none';
+			parent.appendChild(this.element);
+
+			this.days = [];
+
+		}
+
+		var CalendarDay = function(){};
+		CalendarDay.prototype = {
+			constructor : CalendarDay,
+			display : function(date,parent){
+				var element = document.createElement('div');
+				parent.appendChild(element);
+				element.style.display = 'inline-block';
+				element.innerHTML = date;
+			}
+		};
+
+		var calendarDaySingleIntance = new CalendarDay(); 
+
+
+		// 测试
+		window.onload = function(){
+			var div = document.getElementById('mydiv');
+			// 创建了1个CalendarYear对象 12个CalendarMonth对象 1个CalendarDay对象
+			var Y = new CalendarYear(2013,div);
+			Y.display();
+		}
+
+	</script>
+</body>
+</html>
