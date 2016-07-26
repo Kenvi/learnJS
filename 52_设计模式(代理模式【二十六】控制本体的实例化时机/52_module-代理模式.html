@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>52_module-代理模式</title>
+</head>
+<body>
+	<script src="../resource/commom.js"></script>
+	<script>
+		// 代理模式(proxy)：代理也是对象，目的是为了控制对本体的访问
+
+		var Book = function (id,title,author) {
+			this.id = id;
+			this.title = title;
+			this.author = author;
+		}
+
+		// 图书馆
+		var Library = function (books) {
+			this.books = books;
+		};
+		Library.prototype = {
+			constructor : Library,
+			addBook : function (book) {
+				this.books[book.id] = book;
+			},
+			findBook : function (id) {
+				if(this.books[id]){
+					return this.books[id];
+				}
+				return null;
+			},
+			lendBook : function(id){
+				return this.books[id];
+			},
+			returnBook : function(book){
+				this.books[book.id] = book;
+			}
+		};
+
+		// 图书馆的代理对象
+		var LibraryProxy = function (books) {
+			this.books = books;
+			this.library = null;
+		};
+		LibraryProxy.prototype = {
+			constructor : LibraryProxy,
+			initLib : function(){
+				if(this.library === null){
+					return this.library = new Library(this.books);
+				}
+			},
+			addBook : function (book) {
+				this.initLib();
+				this.library.addBook(book);
+			},
+			findBook : function (id) {
+				this.initLib();				
+				return this.library.findBook(id);
+			},
+			lendBook : function(id){
+				this.initLib();				
+				this.library.lendBook(id);
+			},
+			returnBook : function(book){
+				this.initLib();				
+				this.library.returnBook(book);
+			}
+		};
+
+		// 测试
+		var proxy = new LibraryProxy({'001':new Book('001','java','luyongheng'),'002':new Book('002','javascript','chenxiaobin')});
+		console.log(proxy.findBook('002').author); // chenxiaobin
+
+	</script>
+</body>
+</html>
