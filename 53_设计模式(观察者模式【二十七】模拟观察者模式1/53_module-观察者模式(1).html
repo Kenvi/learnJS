@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>53_module-观察者模式</title>
+</head>
+<body>
+	<script>
+		// 观察者模式：对程序中末一个对象进行实时的观察，当该对象状态发生改变的时候进行通知
+		// 场景：订报纸(发布者，订阅者)
+
+		// 发布者(被观察者)
+		var Publish = function(name){
+			this.name = name;
+			this.subscribers = []; // 接收的所有订阅者，每一个元素是函数类型的数组
+		};
+		// 发布消息的方法
+		Publish.protptype.deliver = function(news){
+			var publish = this;
+			this.subscribers.forEach(function(fn){
+				fn(publish,news);
+			});
+			return this;
+		};
+
+		// 订阅方法
+		Fuction.protptype.subscribe = function(publish){
+			var sub = this;
+			// some方法：循环遍历数组所有的元素并执行一个函数，如果其中一个返回true整体返回true
+			var alreadyExists =  publish.subscribers.some(function(item){
+				if(item === sub){
+					return true; // 表示当前用户已经订阅
+				}else{
+					return false;
+				}
+				// or
+				// return item === sub;
+			});
+			// 未订阅，添加
+			if(!alreadyExists){
+				publish.subscribers.push(this);
+			}
+			return this;
+		};
+
+		// 取消订阅
+		Fuction.protptype.unsubscribe = function(publish){
+			var sub = this;
+			// filter方法:循环遍历数组所有的元素并执行一个函数，如果不匹配则删除
+			publish.subscribers = publish.subscribers.filter(function(item){
+				return item !== sub;
+			});
+			return this;
+		}
+	</script>
+</body>
+</html>
