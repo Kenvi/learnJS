@@ -48,7 +48,7 @@
 			this.weeks = [];
 			var len = monthDays%4 === 0 ? monthDays/4 : monthDays/4+1;
 			for(var i=0;i<len;i++){
-				this.weeks[i] = new CalendarWeek(i,this.weeks[i],this.element);
+				this.weeks[i] = new CalendarWeek(i,this.weeks[i],monthDays,this.element);
 			}
 		};
 		CalendarMonth.prototype = {
@@ -61,15 +61,24 @@
 			}
 		};
 
-		var CalendarWeek = function(weekNum,weeks,parent){
+		var CalendarWeek = function(weekNum,weeks,days,parent){
 			this.week = weekNum;
 			this.element = document.createElement('tr');
 			this.element.style.display = 'none';
 			parent.appendChild(this.element);
 
 			this.days = [];
+			for(var i=0;i<days.length;i++){
+				this.days[i] = calendarDaySingleIntance;
+			}
 
-		}
+		};
+		CalendarWeek.prototype.display = function(){
+			for(var i=0;i<this.days.length;i++){
+				this.days[i].display(i+1,this.element);
+			}
+			this.element.style.display = 'block';
+		};
 
 		var CalendarDay = function(){};
 		CalendarDay.prototype = {
