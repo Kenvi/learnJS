@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>55_module-命令模式概念</title>
+</head>
+<body>
+	<script src="..resource/commom.js"></script>
+	<script>
+		// 命令模式：把调用命令的调用者 和 执行命令的接收者 隔离
+		// 要求：必须实现接口
+		// 分类：简单命令模式 复杂命令模式(事物) 闭包命令模式
+
+		var CommandInterface = new CP.Interface('CommandInterface',['excute']);
+
+		// 简单命令模式：start stop
+		/*
+		var StartCommand = function(obj){this.ad = obj;};
+		StartCommand.prototype.excute = function(){this.ad.start();}
+		var StopCommand = function(obj){this.ad = obj;};
+		StopCommand.prototype.excute = function(){this.ad.start();}
+		*/
+
+
+		// 闭包命令模式
+		/*
+		function MakeStart(obj){
+			return function(){
+				obj.start();
+			};
+		};
+		function MakeStop(obj){
+			return function(){
+				obj.stop();
+			};
+		};
+
+		var startCommand = new MakeStart(obj);
+		startCommand(); // 命令开启
+		*/
+	</script>
+</body>
+</html>

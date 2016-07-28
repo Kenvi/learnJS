@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>56_module-命令模式实现操作回退功能</title>
+</head>
+<body>
+	
+
+	<script src="..resource/commom.js"></script>
+	<script>
+
+		var RebackInterface = new CP.Interface('RebackInterface',['excute','reback']);
+
+		// 命令对象：调用者
+		var MoveUp = function(obj){this.cursor;}
+		MoveUp.prototype.excute = function(){this.cursor.move(0,-10);};
+		MoveUp.prototype.reback = function(){this.cursor.move(0,10);};
+
+		var MoveDown = function(obj){this.cursor;}
+		MoveDown.prototype.excute = function(){this.cursor.move(0,10);};
+		MoveDown.prototype.reback = function(){this.cursor.move(0,-10);};
+
+		var MoveLeft = function(obj){this.cursor;}
+		MoveLeft.prototype.excute = function(){this.cursor.move(-10,0);};
+		MoveLeft.prototype.reback = function(){this.cursor.move(10,0);};
+
+		var MoveRight = function(obj){this.cursor;}
+		MoveRight.prototype.excute = function(){this.cursor.move(10,0);};
+		MoveRight.prototype.reback = function(){this.cursor.move(-10,0);};
+
+
+		// 接收者
+		var Cursor = function(width,height,parent){
+			this.width = width;
+			this.height = height;
+			this.position = {x:this.width/2,y:this.height/2};
+
+			this.canvas = document.createElement('canvas');
+			this.canvas.width = this.width;
+			this.canvas.height = this.height;
+
+			parent.appendChild(this.canvas);
+
+			this.ctx = this.canvas.getContext('2d');
+			this.ctx.fillStyle = 'red';
+
+			this.move(0,0);
+		};
+		Cursor.prototype.move = function(x,y){
+			this.position.x += x;
+			this.position.y += y;
+
+			this.ctx.clearRect(0,0,this.width,this.height); // 先清除上一个再重绘
+
+			this.ctx.fillRect(this.position.x,this.position.y,20,20);
+		};
+
+	</script>
+</body>
+</html>
