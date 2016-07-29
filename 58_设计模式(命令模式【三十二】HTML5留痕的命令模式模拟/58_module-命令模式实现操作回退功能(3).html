@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>58_module-命令模式实现操作回退功能(3)</title>
+</head>
+<body>
+	
+
+	<script src="../resource/commom.js"></script>
+	<script>
+
+		var RebackInterface = new CP.Interface('RebackInterface',['excute']); // 接口需要reback，本方法的撤回是重绘
+
+		// 命令对象：调用者
+		var MoveUp = function(obj){this.cursor = obj;}
+		MoveUp.prototype.excute = function(){this.cursor.move(0,-10);};
+
+		var MoveDown = function(obj){this.cursor = obj;}
+		MoveDown.prototype.excute = function(){this.cursor.move(0,10);};
+
+		var MoveLeft = function(obj){this.cursor = obj;}
+		MoveLeft.prototype.excute = function(){this.cursor.move(-10,0);};
+
+		var MoveRight = function(obj){this.cursor = obj;}
+		MoveRight.prototype.excute = function(){this.cursor.move(10,0);};
+
+
+		// 接收者
+		var Cursor = function(width,height,parent){
+			this.width = width;
+			this.height = height;
+			this.commandStack = [];
+
+			this.canvas = document.createElement('canvas');
+			this.canvas.width = this.width;
+			this.canvas.height = this.height;
+
+			parent.appendChild(this.canvas);
+
+			this.ctx = this.canvas.getContext('2d');
+			this.ctx.strokeStyle = 'red';
+
+			this.move(0,0);
+		};
+		Cursor.prototype.move = function(x,y){
+			var that = this;
+			this.commandStack.push(function(){that.lineTo(x,y);});
+
+			this.excuteCommands();	
+		};
+		Cursor.prototype.lineTo = function(x,y){
+			this.position.x += x;
+			this.position.y += y;
+			this.ctx.lineTo(this.position.x,this.position.y); 
+
+		};
+		Cursor.prototype.excuteCommands = function(){
+			this.position = {x:this.width/2,y:this.height/2};
+			this.ctx.clearRect(0,0,this.width,this.height); // 先清除上一个再重绘
+			this.ctx.beginPath();
+			this.ctx.moveTo(this.position.x,this.position.y); 
+
+			for(var i=0;i<this.commandStack.length;i++){
+				this.commandStack[i]();
+			}
+
+			this.ctx.stroke();
+
+		};
+		Cursor.prototype.reback = function(){
+			this.commandStack.pop();
+			this.excuteCommands();
+		};
+
+		
+		// 创建DOM
+		var CommadButton = function(label,command,parent){
+			// 检查接口
+			CP.Interface.ensureImplements(command,RebackInterface);
+
+			// 实例化按钮 
+			this.elem = document.createElement('button');
+			this.elem.innerHTML = label;
+			parent.appendChild(this.elem);
+
+			// 添加事件
+			CP.EventUtil.addHandler(this.elem,'click',function(){
+				command.excute();
+			});
+		};
+
+		var RebackButton = function(label,parent,cursor){
+			// 实例化按钮 
+			this.elem = document.createElement('button');
+			this.elem.innerHTML = label;
+			parent.appendChild(this.elem);
+
+			// 添加事件
+			CP.EventUtil.addHandler(this.elem,'click',function(){
+				
+				cursor.reback(); // 执行最后操作的回退命令
+			});
+		};
+
+
+		// 测试
+		window.onload = function(){
+			var body = document.getElementsByTagName('body')[0]; // 返回数组
+			var cursor = new Cursor(400,400,body);
+			var rebackStack = [];
+
+			// 创建命令
+			var Up = new MoveUp(cursor);
+			var Down = new MoveDown(cursor);
+			var Left = new MoveLeft(cursor);
+			var Right = new MoveRight(cursor);
+
+			// 创建按钮
+			var ubtn = new CommadButton('up',Up,body);
+			var dbtn = new CommadButton('down',Down,body);
+			var lbtn = new CommadButton('left',Left,body);
+			var rbtn = new CommadButton('right',Right,body);
+			var rebackbtn = new RebackButton('reback',body,cursor);
+		};
+
+
+	</script>
+</body>
+</html>
