@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>59_module-责任链模式(1)</title>
+</head>
+<body>
+	
+	<!-- 责任链模式 -->
+	<script>
+		// 目的：发出者与接收者的耦合
+		// 场景：项目 -> leader -> team[a,b,c,d]
+
+		// 任务的类
+		var Assign = function(task){
+			this.task = task;
+		};
+
+		// 接收任务的类
+		var WorkFlow = function(assign){
+			this.assign = assign;
+		};
+		// 分析当前任务适合谁做
+		WorkFlow.prototype.filterHander = function(es){
+			for(var i=0,len=es.length;i<len;i++){
+				if(this.assign.task === es[i].cando){
+					return es[i].todo();
+				}
+			}
+			return;
+			
+		};
+
+		// 处理者
+		var Excutor = function(name,cando){
+			this.name = name; // 接收者姓名
+			this.cando = cando; // 擅长任务
+		};
+		Excutor.prototype.todo = function(){
+			console.log(this.name + ' 开发： ' + this.cando);
+		};
+
+		// 实例化处理对象
+		var e1 = new Excutor('chenxiaobin','JavaScript');
+		var e2 = new Excutor('luyongheng','CSS');
+		var e3 = new Excutor('zhangtaiming','Html');
+
+		// 实例化任务对象
+		var assign = new Assign('CSS');
+
+		// 实例化处理任务的类对象
+		var wf = new WorkFlow(assign);
+		wf.filterHander([e1,e2,e3]); // luyongheng 开发： CSS
+	</script>
+</body>
+</html>

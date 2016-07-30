@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>60_module-责任链模式(2)</title>
+</head>
+<body>
+	
+	<!-- 责任链模式 -->
+	<script>
+		// 目的：降低发出者与接收者的耦合
+
+		/**
+		* 发送者知道链中的第一个接收者并向这个接收者发出请求
+		* 每一个接收者都对请求进行分析，要么处理要么向下传递
+		* 每一个接收者知道的其他对象只有一个，即下家对象
+		* 如果没有接收者处理请求，则请求从链上离开，不同的实现对此有不同的反应
+		*/
+
+		// 场景：项目 -> leader -> team[a,b,c,d]
+
+		// 任务的类
+		var Assign = function(task){
+			this.task = task;
+		};
+
+		// 接收任务的类
+		var WorkFlow = function(assign){
+			this.assign = assign;
+		};
+		// 分析当前任务适合谁做 当前函数只接收一个接收者对象(链中的第一个接收者)
+		WorkFlow.prototype.filterHander = function(excutor){
+			if(this.assign.task === excutor.cando){
+				return excutor.todo();
+			}else{
+				arguments.callee.call(this,excutor.successor);
+			}
+		};
+
+		// 处理者
+		var Excutor = function(name,cando){
+			this.name = name; // 接收者姓名
+			this.cando = cando; // 擅长任务
+			this.successor = null; // 保留当前接收者的下家对象的引用
+		};
+		Excutor.prototype.todo = function(){
+			console.log(this.name + ' 开发： ' + this.cando);
+		};
+		Excutor.prototype.setSuccessor = function(successor){
+			this.successor = successor; // 设置责任链的配置函数
+		};
+
+		// 实例化处理对象
+		var e1 = new Excutor('chenxiaobin','JavaScript');
+		var e2 = new Excutor('luyongheng','CSS');
+		var e3 = new Excutor('zhangtaiming','Html');
+		e1.setSuccessor(e2);
+		e2.setSuccessor(e3);
+		e3.setSuccessor(e1);
+
+		// 实例化任务对象
+		var assign = new Assign('CSS');
+
+		// 实例化处理任务的类对象
+		var wf = new WorkFlow(assign);
+		wf.filterHander(e3); // luyongheng 开发： CSS
+	</script>
+</body>
+</html>
