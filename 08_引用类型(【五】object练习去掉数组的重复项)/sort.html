@@ -2,47 +2,260 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>实现排序算法</title>
+	<title>Document</title>
 </head>
 <body>
 	<script>
-		    const arr = [12,2,7,5,11,20,13,1,19,16,10,9,17,3,18,6,14,4,8,15]
-		    
-		    function sort(arr,fn){
-		    	this.arr = arr
-		    	this.res = []
+    const arr = [12,2,7,5,11,20,13,1,19,16,10,9,17,3,18,6,14,4,8,15]
 
-					// this.prototype = {}
-		  		sort.prototype._sort = function(){
+    // 冒泡排序
+		/*
+			依次比较相邻的两个数，如果不符合排序规则，则调换两个数的位置。这样一遍比较下来，能够保证最大（或最小）的数排在最后一位。再对最后一位以外的数组，重复前面的过程，直至全部排序完成。
 
-				    let index , max = 0 
+			以对数组[3, 2, 4, 5, 1]进行从小到大排序为例，步骤如下：
+			第一位的“3”与第二位的“2”进行比较，3大于2，互换位置，数组变成[2, 3, 4, 5, 1]。
+			第二位的“3”与第三位的“4”进行比较，3小于4，数组不变。s
+			第三位的“4”与第四位的“5”进行比较，4小于5，数组不变。
+			第四位的“5”与第五位的“1”进行比较，5大于1，互换位置，数组变成[2, 3, 4, 1, 5]。
+		*/
+    function Maopao(arr,fn){
+    	this.arr = arr.slice()
+    	this.count = 0
 
-				    for(let i=0;i<this.arr.length;i++){
-							if(max < this.arr[i]){
-								max = this.arr[i]
-								index = i
-							}
-						} 
+    	Maopao.prototype._sort = function(){
 
-						this.arr.splice(index,1)
-						this.res.unshift(max)
-
-						if(this.arr.length === 0){
-							// console.log(this.arr.length)
-							fn(this.res) 
-						}else{
-							this._sort(this.arr)
+				let cache 
+    		for(let i=0;i<this.arr.length;i++){
+    			if(i>0){
+						if(this.arr[i-1] > this.arr[i]){
+							cache = this.arr[i-1]
+							this.arr[i-1] = this.arr[i]
+							this.arr[i] = cache
+							this.count ++
 						}
-		  		}
+    			}
+    		}
+    		delete cache
 
-					return this._sort()
+    		if(this.count === 0){
+    			fn(this.arr)
+    		}else{
+    			this.count = 0
+    			this._sort()
+    		}
 
+    	}
+
+    	return this._sort()
+    }
+
+    new Maopao(arr,function(res){
+    	console.log(res)
+    })
+
+    // 选择排序
+    /*
+			选择排序（Selection Sort）与冒泡排序类似，也是依次对相邻的数进行两两比较。不同之处在于，它不是每比较一次就调换位置，而是一轮比较完毕，找到最大值（或最小值）之后，将其放在正确的位置，其他数的位置不变。
+
+			以对数组[3, 2, 4, 5, 1] 进行从小到大排序为例，步骤如下：
+			假定第一位的“3”是最小值。
+			最小值“3”与第二位的“2”进行比较，2小于3，所以新的最小值是第二位的“2”。
+			最小值“2”与第三位的“4”进行比较，2小于4，最小值不变。
+			最小值“2”与第四位的“5”进行比较，2小于5，最小值不变。
+			最小值“2”与第五位的“1”进行比较，1小于2，所以新的最小值是第五位的“1”。
+			第五位的“1”与第一位的“3”互换位置，数组变为[1, 2, 4, 5, 3]。
+    */
+		    
+    function Selection(arr,fn){
+    	this.arr = arr.slice() // 复制原数组，在不改变原数组的前提下方便接下来处理
+    	this.res = []
+
+  		Selection.prototype._sort = function(){
+
+		    let index , max = 0 
+
+		    for(let i=0;i<this.arr.length;i++){
+					if(max < this.arr[i]){
+						max = this.arr[i]
+						index = i
+					}
+				} 
+
+				this.arr.splice(index,1)
+				this.res.unshift(max)
+
+				if(this.arr.length === 0){
+					fn(this.res) 
+				}else{
+					this._sort(this.arr)
+				}
+  		}
+
+			return this._sort()
+
+    }
+
+		new Selection(arr,function(res){
+
+	    console.log(res)
+		})
+
+		// 插入排序
+		/*
+			插入排序（insertion sort）比前面两种排序方法都更有效率。它将数组分成“已排序”和“未排序”两部分，一开始的时候，“已排序”的部分只有一个元素，然后将它后面一个元素从“未排序”部分插入“已排序”部分，从而“已排序”部分增加一个元素，“未排序”部分减少一个元素。以此类推，完成全部排序。
+
+			以对数组[3, 2, 4, 5, 1] 进行从小到大排序为例，步骤如下：
+			将数组分成[3]和[2, 4, 5, 1]两部分，前者是已排序的，后者是未排序的。
+			取出未排序部分的第一个元素“2”，与已排序部分最后一个元素“3”比较，因为2小于3，所以2排在3前面，整个数组变成[2, 3]和[4, 5, 1]两部分。
+			取出未排序部分的第一个元素“4”，与已排序部分最后一个元素“3”比较，因为4大于3，所以4排在3后面，整个数组变成[2, 3, 4]和[5, 1]两部分。
+			取出未排序部分的第一个元素“5”，与已排序部分最后一个元素“4”比较，因为5大于4，所以5排在4后面，整个数组变成[2, 3, 4, 5]和[1]两部分。
+			取出未排序部分的第一个元素“1”，与已排序部分最后一个元素“5”比较，因为1小于5，所以再与前一个元素“4”比较；因为1小于4，再与前一个元素“3”比较；因为1小于3，再与前一个元素“2”比较；因为小于1小于2，所以“1”排在2的前面，整个数组变成[1, 2, 3, 4, 5]。
+		*/
+
+		function Insertion(arr,fn){
+			this.arr = arr.slice(1)
+			this.res = [arr[0]]
+
+			Insertion.prototype._sort = function(){
+
+				for(let i=this.res.length;i>0;i--){
+
+					if(this.arr[0] > this.res[i-1]){
+						this.res.splice(i,0,this.arr[0])		
+						return this._isFinish()
+					}else if(i === 1){
+						this.res.unshift(this.arr[0])						
+						return this._isFinish()
+					}
+				}
+				
+			}
+
+			Insertion.prototype._isFinish = function(){
+				if(this.arr.length === 1	){
+					fn(this.res)
+				}else{
+					this.arr.shift()
+					this._sort()
+				}
+			}
+
+			return this._sort()
+		}
+
+		new Insertion(arr,function(res){
+			console.log(res)
+		})
+
+		/*==========================================================================*/ 
+
+		function insertionSort(myArray) {
+
+		    var len     = myArray.length,     // 数组的长度
+		        value,                      // 当前比较的值
+		        i,                          // 未排序部分的当前位置
+		        j;                          // 已排序部分的当前位置
+		    
+		    for (i=0; i < len; i++) {
+		    
+		        // 储存当前位置的值
+		        value = myArray[i];
+		        
+		        /*
+		         * 当已排序部分的当前元素大于value，
+		         * 就将当前元素向后移一位，再将前一位与value比较
+		         */
+		        for (j=i-1; j > -1 && myArray[j] > value; j--) {
+		            myArray[j+1] = myArray[j];
+		        }
+
+		        myArray[j+1] = value;
+		    }
+		    
+		    return myArray;
+		}
+
+		// 合并排序
+		/*
+			它的基本思想是，将两个已经排序的数组合并，要比从头开始排序所有元素来得快。因此，可以将数组拆开，分成n个只有一个元素的数组，然后不断地两两合并，直到全部排序完成。
+
+			以对数组[3, 2, 4, 5, 1] 进行从小到大排序为例，步骤如下：
+			将数组分成[3, 2, 4]和[5, 1]两部分。
+			将[3, 2, 4]分成[3, 2]和[4]两部分。
+			将[3, 2]分成[3]和[2]两部分，然后合并成[2, 3]。
+			将[2, 3]和[4]合并成[2, 3, 4]。
+			将[5, 1]分成[5]和[1]两部分，然后合并成[1, 5]。
+			将[2, 3, 4]和[1, 5]合并成[1, 2, 3, 4, 5]。
+		*/
+
+		function Merge(arry){
+
+			Merge.prototype._split = function(arr){
+
+				if(arr.length < 2){
+					return arr
+				}
+
+				let left = arr.slice(0 , Math.floor(arr.length / 2))
+				let right = arr.slice(Math.floor(arr.length / 2))
+
+				return this._sort(this._split(left), this._split(right))
+				
+			}
+
+
+			Merge.prototype._sort = function(left,right){
+				let il = 0
+				let ir = 0
+				let res = []
+				while(il < left.length && ir < right.length){
+					if (left[il] < right[ir]){
+					    res.push(left[il++]);
+					} else {
+					    res.push(right[ir++]);
+					}
+				}
+
+				return res.concat(left.slice(il)).concat(right.slice(ir))				
+			}
+	
+			return this._split(arry)
+		}
+
+		var nnn = new Merge(arr)
+
+		/*==========================================================================*/ 
+		
+
+		function merge(left, right){
+		    var result  = [],
+		        il      = 0,
+		        ir      = 0;
+
+		    while (il < left.length && ir < right.length){
+		        if (left[il] < right[ir]){
+		            result.push(left[il++]);
+		        } else {
+		            result.push(right[ir++]);
+		        }
 		    }
 
-				new sort(arr,function(res){
+		    return result.concat(left.slice(il)).concat(right.slice(ir));
+		}
 
-			    console.log(res)
-				})
+		function mergeSort(myArray){
+
+		    if (myArray.length < 2) {
+		        return myArray;
+		    }
+
+		    var middle = Math.floor(myArray.length / 2),
+		        left    = myArray.slice(0, middle),
+		        right   = myArray.slice(middle);
+
+		    return merge(mergeSort(left), mergeSort(right));
+		}
+
 	</script>
 </body>
 </html>
